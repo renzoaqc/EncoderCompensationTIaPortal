@@ -1,0 +1,49 @@
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Datos proporcionados
+data = {
+    "Largo Nominal": [1018] * 10 + [1408] * 10 + [1660] * 10,
+    "Largo Medido": [
+        851, 853, 851, 854, 852, 850, 852, 850, 851, 853,
+        1238, 1237, 1237, 1237, 1236, 1236, 1238, 1236, 1236, 1238,
+        1488, 1485, 1488, 1489, 1489, 1488, 1486, 1487, 1487, 1488
+    ],
+    "Valor Corregido": [
+        1018, 1020, 1018, 1021, 1019, 1017, 1019, 1017, 1018, 1020,
+        1408, 1407, 1407, 1407, 1406, 1406, 1408, 1406, 1406, 1408,
+        1661, 1658, 1661, 1662, 1662, 1661, 1659, 1660, 1660, 1661
+    ]
+}
+
+# Convertir el diccionario en un DataFrame
+df = pd.DataFrame(data)
+
+# Ajustar un modelo de regresión lineal con "Largo Medido" como predictor
+X = df[['Largo Medido']]
+y = df['Valor Corregido']
+model = LinearRegression().fit(X, y)
+
+# Obtener los coeficientes
+k = model.coef_[0]
+b = model.intercept_
+
+# Calcular los valores corregidos predichos
+df['Valor Corregido Predicho'] = model.predict(X)
+
+# Mostrar resultados
+print("Ecuación para los valores corregidos:")
+print(f"Valor Corregido = {k} * Largo Medido + {b}")
+
+print("\nResultados:")
+print(df[['Largo Medido', 'Valor Corregido', 'Valor Corregido Predicho']])
+
+# Visualización
+plt.scatter(df['Largo Medido'], df['Valor Corregido'], color='blue', label='Datos Originales')
+plt.plot(df['Largo Medido'], df['Valor Corregido Predicho'], color='red', label='Modelo Ajustado')
+plt.xlabel('Largo Medido')
+plt.ylabel('Valor Corregido')
+plt.title('Valor Corregido vs. Largo Medido')
+plt.legend()
+plt.show()
